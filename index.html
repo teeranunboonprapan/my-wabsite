@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจองคิวช่างภาพ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --light-blue: #dbeafe;
+            --dark-blue: #1e40af;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --text-dark: #0f172a;
+            --bg-color: #ffffff;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition-speed: 0.3s;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* Header Styling */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-blue) 100%);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow-lg);
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            font-size: 2.5em;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-subtitle {
+            color: var(--light-blue);
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h2 {
+            font-weight: 600;
+            color: var(--primary-color);
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 15px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+        }
+
+        /* Card Styling */
+        #calendar-container, #booking-list-container, #search-container {
+            background-color: var(--bg-color);
+            padding: 35px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow-lg);
+            margin-bottom: 35px;
+            animation: fadeInUp 0.8s ease-out;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Search Container */
+        #search-container {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        #search-form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #search-form input[type="date"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 2px solid var(--medium-gray);
+            font-size: 1em;
+            transition: all var(--transition-speed);
+            background: white;
+        }
+
+        #search-form input[type="date"]:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        #search-form button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all var(--transition-speed);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #search-form button[type="submit"] {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-blue) 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        #search-form button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        #search-form button[type="reset"] {
+            background: linear-gradient(135deg, var(--dark-gray) 0%, #475569 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(100, 116, 139, 0.3);
+        }
+
+        #search-form button[type="reset"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(100, 116, 139, 0.4);
+        }
+
+        /* Calendar Header */
+        #calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--light-blue) 0%, #bfdbfe 100%);
+            border-radius: 10px;
+        }
+        
+        #month-year {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        #calendar-header button {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-blue) 100%);
+            border: none;
+            font-size: 1.4em;
+            cursor: pointer;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all var(--transition-speed);
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+            font-weight: bold;
+        }
+
+        #calendar-header button:hover {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        #calendar-header button:active {
+            transform: scale(0.95);
+        }
+
+        /* Calendar Grid */
+        #calendar-days, #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+        }
+
+        .day, .date {
+            text-align: center;
+            padding: 18px 10px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .day {
+            font-weight: 700;
+            color: var(--primary-color);
+            background: var(--light-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+
+        .date {
+            cursor: pointer;
+            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--medium-gray);
+            background: white;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .date::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .date:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+
+        .date.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .date.booked {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            color: white;
+            font-weight: 700;
+            border-color: transparent;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+        }
+
+        .date.deposit-paid {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        }
+
+        .date.booked::after {
+            content: '●';
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .date.today {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-blue) 100%);
+            color: white;
+            font-weight: 700;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            animation: todayGlow 2s infinite;
+        }
+
+        @keyframes todayGlow {
+            0%, 100% { box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 4px 20px rgba(59, 130, 246, 0.6); }
+        }
+
+        .date.past {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #94a3b8;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+        }
+
+        .date:not(.past):not(.booked):not(.today):not(.empty):hover {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+            border-color: transparent;
+        }
+
+        /* Booking List */
+        #booking-list {
+            margin-top: 25px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .booking-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-left: 6px solid var(--secondary-color);
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+            transition: width var(--transition-speed);
+        }
+
+        .booking-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .booking-item:hover::before {
+            width: 100%;
+            opacity: 0.05;
+        }
+
+        .booking-item strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .booking-item hr {
+            border: none;
+            border-top: 2px solid var(--medium-gray);
+            margin: 18px 0;
+        }
+
+        .booking-item button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-item button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .booking-item button:hover::before {
+            width: 300%;
+            height: 300%;
+        }
+
+        .booking-item button:first-of-type {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-blue) 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        .booking-item button:first-of-type:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .booking-item button:last-of-type {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+        }
+
+        .booking-item button:last-of-type:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            margin: 5% auto;
+            padding: 40px;
+            border: none;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--box-shadow-lg);
+            animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            border-top: 6px solid var(--secondary-color);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-80px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .close {
+            color: var(--dark-gray);
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            transition: all var(--transition-speed);
+            cursor: pointer;
+            line-height: 1;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close:hover, .close:focus {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+            transform: rotate(90deg);
+        }
+
+        #modal-title {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.8em;
+            font-weight: 700;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Form Styling */
+        form label {
+            display: block;
+            margin-top: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-size: 0.95em;
+        }
+
+        form input {
+            width: 100%;
+            padding: 14px 16px;
+            margin-top: 5px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: all var(--transition-speed);
+            font-size: 1em;
+            background: white;
+        }
+
+        form input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        form input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+            transform: scale(1.2);
+        }
+
+        form button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            margin-top: 30px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-blue) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        form button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        form button[type="submit"]:active {
+            transform: translateY(-1px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .header-subtitle {
+                font-size: 0.9em;
+            }
+
+            #calendar-container, #booking-list-container, #search-container {
+                padding: 20px;
+            }
+
+            .day, .date {
+                padding: 12px 5px;
+                font-size: 0.85em;
+            }
+
+            #month-year {
+                font-size: 1.3em;
+            }
+
+            #calendar-header button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+            }
+
+            .booking-item {
+                padding: 18px;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 25px;
+                width: 95%;
+            }
+
+            #search-form {
+                flex-direction: column;
+            }
+
+            #search-form input[type="date"],
+            #search-form button {
+                width: 100%;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .loading {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-size: 1000px 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎥 Sriphitsanu Nuisuk</h1>
+            <div class="header-subtitle">ระบบจัดการการจองช่างภาพและช่างวิดีโอมืออาชีพ</div>
+        </div>
+
+        <div id="search-container">
+            <h2>🔍 ค้นหารายการจอง</h2>
+            <form id="search-form">
+                <input type="date" id="search-date" placeholder="เลือกวันที่">
+                <button type="submit">ค้นหา</button>
+                <button type="reset" id="reset-search">ล้างการค้นหา</button>
+            </form>
+        </div>
+
+        <div id="calendar-container">
+            <h2>📅 ปฏิทินการจอง</h2>
+            <div id="calendar-header">
+                <button id="prev-month"><</button>
+                <h2 id="month-year"></h2>
+                <button id="next-month">></button>
+            </div>
+            <div id="calendar-days">
+                <div class="day">อา</div>
+                <div class="day">จ</div>
+                <div class="day">อ</div>
+                <div class="day">พ</div>
+                <div class="day">พฤ</div>
+                <div class="day">ศ</div>
+                <div class="day">ส</div>
+            </div>
+            <div id="calendar"></div>
+        </div>
+
+        <div id="booking-list-container">
+            <h2>📋 รายการจองเดือนนี้</h2>
+            <div id="booking-list"></div>
+        </div>
+    </div>
+
+    <!-- Modal สำหรับฟอร์มจอง/แก้ไข -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modal-title">จองคิว</h3>
+            <form id="booking-form">
+                <input type="hidden" id="booking-id">
+                <label for="booking-date">วันที่:</label>
+                <input type="date" id="booking-date" required readonly>
+
+                <label for="name">ชื่อ-นามสกุล:</label>
+                <input type="text" id="name" required>
+
+                <label for="address">ที่อยู่/สถานที่:</label>
+                <input type="text" id="address" required>
+
+                <label for="duration">ระยะเวลา (เช่น เต็มวัน, ครึ่งวันเช้า):</label>
+                <input type="text" id="duration">
+
+                <label for="google-maps-link">ลิงก์ Google Maps:</label>
+                <input type="url" id="google-maps-link" placeholder="https://maps.app.goo.gl/...">
+
+                <label for="photographer-count">จำนวนช่างภาพ:</label>
+                <input type="number" id="photographer-count" min="1" required>
+
+                <label for="videographer-count">จำนวนช่างวิดีโอ (ถ้ามี):</label>
+                <input type="number" id="videographer-count" min="0" placeholder="0">
+
+                <label for="price">ราคา:</label>
+                <input type="number" id="price" min="0">
+
+                <div>
+                    <input type="checkbox" id="deposit-paid">
+                    <label for="deposit-paid" style="display: inline;">จ่ายมัดจำแล้ว</label>
+                </div>
+
+                <button type="submit">ยืนยันการจอง</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
