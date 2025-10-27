@@ -72,10 +72,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 dateCell.classList.add('today');
             }
 
-            const bookingForDay = bookings.find(b => new Date(b.date).toDateString() === thisDate.toDateString());
+            // FIX: Timezone bug and add deposit status check
+            const bookingForDay = bookings.find(b => {
+                const bookingDate = new Date(b.date);
+                return bookingDate.getUTCFullYear() === year &&
+                       bookingDate.getUTCMonth() === month &&
+                       bookingDate.getUTCDate() === day;
+            });
+
             if (bookingForDay) {
                 dateCell.classList.add('booked');
-                if (bookingForDay.depositPaid) {
+                if (bookingForDay.depositStatus === 'มัดจำแล้ว') {
                     dateCell.classList.add('deposit-paid');
                 }
             }
@@ -88,9 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingList.innerHTML = '';
         const listTitle = document.querySelector('#booking-list-container h2');
         
+        // FIX: Timezone bug
         const bookingsToRender = filteredBookings || bookings.filter(b => {
             const bookingDate = new Date(b.date);
-            return bookingDate.getFullYear() === currentDate.getFullYear() && bookingDate.getMonth() === currentDate.getMonth();
+            return bookingDate.getUTCFullYear() === currentDate.getFullYear() && bookingDate.getUTCMonth() === currentDate.getMonth();
         });
 
         if (filteredBookings) {
@@ -115,14 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (booking.googleMapsLink) {
                 mapsLink = `<a href="${booking.googleMapsLink}" target="_blank">(ดูแผนที่)</a>`;
             }
-            let depositInfo = `<strong>มัดจำ:</strong> ${booking.depositPaid ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}`;
+
+            // ADD: Deposit status badge
+            const depositPaidClass = booking.depositStatus === 'มัดจำแล้ว' ? 'deposit-paid-text' : '';
+            const depositBadge = `<span class="deposit-badge ${depositPaidClass}">${booking.depositStatus}</span>`;
+
             item.innerHTML = `
-                <strong>วันที่:</strong> ${new Date(booking.date).toLocaleDateString('th-TH')} <br>
+                <strong>วันที่:</strong> ${new Date(booking.date).toLocaleDateString('th-TH')} ${depositBadge}<br>
                 <strong>ชื่อ:</strong> ${booking.name} <br>
                 <strong>สถานที่:</strong> ${booking.address} ${mapsLink} <br>
                 <strong>ระยะเวลา:</strong> ${booking.duration || 'N/A'} <br>
-                <strong>ราคา:</strong> ${booking.price ? booking.price.toLocaleString() : 'N/A'} บาท<br>
-                ${depositInfo}<br>
+                <strong>ราคา:</strong> ${booking.price || 'N/A'}<br>
                 <strong>ช่างภาพ:</strong> ${booking.photographerCount} คน <br>
                 ${videoInfo}
                 <hr>
@@ -139,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingForm.reset();
         bookingIdInput.value = '';
         bookingDateInput.value = date;
-        document.getElementById('deposit-paid').checked = false;
     }
 
     window.openEditModal = function(id) {
@@ -156,8 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('google-maps-link').value = booking.googleMapsLink || '';
         document.getElementById('photographer-count').value = booking.photographerCount;
         document.getElementById('videographer-count').value = booking.videographerCount || '';
-        document.getElementById('price').value = booking.price;
-        document.getElementById('deposit-paid').checked = booking.depositPaid;
+        document.getElementById('price').value = booking.price || '';
+        // ADD: Set deposit status in edit modal
+        document.getElementById('deposit-status').value = booking.depositStatus || 'ยังไม่จ่าย';
     }
 
     function closeModal() {
@@ -177,8 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
             photographerCount: document.getElementById('photographer-count').value,
             videographerNeeded: videographerCount > 0,
             videographerCount: videographerCount,
-            price: parseFloat(document.getElementById('price').value) || 0,
-            depositPaid: document.getElementById('deposit-paid').checked
+            price: document.getElementById('price').value || '',
+            // ADD: Get deposit status from form
+            depositStatus: document.getElementById('deposit-status').value
         };
 
         const method = id ? 'PUT' : 'POST';
@@ -253,8 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
         currentDate = new Date(searchDate); // Set calendar to the searched date's month
         renderCalendar();
 
+        // FIX: Timezone bug
         const filtered = bookings.filter(b => {
-            return new Date(b.date).toDateString() === searchDate.toDateString();
+            const bookingDate = new Date(b.date);
+            return bookingDate.getUTCFullYear() === searchDate.getFullYear() &&
+                   bookingDate.getUTCMonth() === searchDate.getMonth() &&
+                   bookingDate.getUTCDate() === searchDate.getDate();
         });
         renderBookingList(filtered);
     });

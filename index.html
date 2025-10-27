@@ -34,7 +34,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #94a3b8 0%, #334155 100%);
             color: var(--text-dark);
             margin: 0;
             padding: 20px;
@@ -559,11 +559,29 @@
             background: white;
         }
 
-        form input:focus {
+        form input:focus, form select:focus {
             outline: none;
             border-color: var(--secondary-color);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
             transform: translateY(-2px);
+        }
+
+        form select {
+            width: 100%;
+            padding: 14px 16px;
+            margin-top: 5px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: all var(--transition-speed);
+            font-size: 1em;
+            background: white;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%233b82f6' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
         }
 
         form input[type="checkbox"] {
@@ -667,13 +685,31 @@
             background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
             background-size: 1000px 100%;
         }
+
+        /* Deposit Badge Styling */
+        .deposit-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+            vertical-align: middle;
+            background-color: var(--medium-gray);
+            color: var(--dark-gray);
+        }
+
+        .deposit-badge.deposit-paid-text {
+            background-color: var(--success-color);
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎥 Sriphitsanu Nuisuk</h1>
-            <div class="header-subtitle">ระบบจัดการการจองช่างภาพและช่างวิดีโอมืออาชีพ</div>
+            <h1>Chalasin Phinthong</h1>
+            <div class="header-subtitle">ระบบจัดการการจองคิวช่างภาพ</div>
         </div>
 
         <div id="search-container">
@@ -705,7 +741,7 @@
         </div>
 
         <div id="booking-list-container">
-            <h2>📋 รายการจองเดือนนี้</h2>
+            <h2>รายการจองเดือนนี้</h2>
             <div id="booking-list"></div>
         </div>
     </div>
@@ -739,12 +775,13 @@
                 <input type="number" id="videographer-count" min="0" placeholder="0">
 
                 <label for="price">ราคา:</label>
-                <input type="number" id="price" min="0">
+                <input type="text" id="price" placeholder="กรอกราคา หรือข้อความ เช่น ตามตกลง">
 
-                <div>
-                    <input type="checkbox" id="deposit-paid">
-                    <label for="deposit-paid" style="display: inline;">จ่ายมัดจำแล้ว</label>
-                </div>
+                <label for="deposit-status">สถานะมัดจำ:</label>
+                <select id="deposit-status">
+                    <option value="ยังไม่จ่าย">ยังไม่จ่าย</option>
+                    <option value="มัดจำแล้ว">มัดจำแล้ว</option>
+                </select>
 
                 <button type="submit">ยืนยันการจอง</button>
             </form>

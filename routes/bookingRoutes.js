@@ -14,18 +14,7 @@ router.get('/', async (req, res) => {
 
 // POST: สร้างการจองใหม่
 router.post('/', async (req, res) => {
-    const booking = new Booking({
-        date: req.body.date,
-        name: req.body.name,
-        address: req.body.address,
-        duration: req.body.duration,
-        googleMapsLink: req.body.googleMapsLink,
-        photographerCount: req.body.photographerCount,
-        videographerNeeded: req.body.videographerNeeded,
-        videographerCount: req.body.videographerCount,
-        price: req.body.price,
-        depositPaid: req.body.depositPaid
-    });
+    const booking = new Booking(req.body);
 
     try {
         const newBooking = await booking.save();

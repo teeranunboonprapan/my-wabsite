@@ -35,12 +35,13 @@ const bookingSchema = new mongoose.Schema({
         default: 0
     },
     price: {
-        type: Number,
-        required: false // ตั้งเป็น false ไปก่อน เผื่อข้อมูลเก่าไม่มี
+        type: String,
+        required: false
     },
-    depositPaid: {
-        type: Boolean,
-        default: false
+    depositStatus: {
+        type: String,
+        enum: ['ยังไม่จ่าย', 'มัดจำแล้ว'],
+        default: 'ยังไม่จ่าย'
     }
 }, { timestamps: true });
 
